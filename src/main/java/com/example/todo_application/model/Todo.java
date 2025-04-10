@@ -17,7 +17,8 @@ public class Todo {
     private User user;
 
     // Constructor
-    public Todo() {}
+    public Todo() {
+    }
 
     public Todo(String taskText, boolean isDone) {
         this.taskText = taskText;
@@ -37,6 +38,10 @@ public class Todo {
         return isDone;
     }
 
+    public User getUser() {
+        return user;
+    }
+
     // Setters
     public void setId(Long id) {
         this.id = id;
@@ -50,6 +55,10 @@ public class Todo {
         isDone = done;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     // toString method
     @Override
     public String toString() {
@@ -58,13 +67,5 @@ public class Todo {
                 ", taskText='" + taskText + '\'' +
                 ", isDone=" + isDone +
                 '}';
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }

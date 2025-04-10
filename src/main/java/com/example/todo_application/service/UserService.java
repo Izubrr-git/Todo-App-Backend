@@ -12,16 +12,6 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User createUser(User user) {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
-        }
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new RuntimeException("Username already exists");
-        }
-        return userRepository.save(user);
-    }
-
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id " + id));
@@ -32,12 +22,26 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found with email " + email));
     }
 
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public User createUser(User user) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            throw new RuntimeException("Username already exists");
+        }
+        return userRepository.save(user);
+    }
+
+
     public User updateUser(User user) {
         User existingUser = getUserById(user.getId());
         existingUser.setUsername(user.getUsername());
         existingUser.setEmail(user.getEmail());
         existingUser.setAvatarUrl(user.getAvatarUrl());
-        // Обратите внимание, что мы теперь обновляем пароль напрямую
         existingUser.setPassword(user.getPassword());
         return userRepository.save(existingUser);
     }
@@ -47,10 +51,6 @@ public class UserService {
             throw new RuntimeException("User not found with id " + id);
         }
         userRepository.deleteById(id);
-    }
-
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
     }
 
     public void changePassword(Long userId, String oldPassword, String newPassword) {
