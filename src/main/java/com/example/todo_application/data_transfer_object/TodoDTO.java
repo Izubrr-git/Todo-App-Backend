@@ -1,4 +1,4 @@
-package com.example.todo_application.dto;
+package com.example.todo_application.data_transfer_object;
 
 import com.example.todo_application.model.Todo;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class TodoDTO {
-    private Long todoId;
+    private Long id;
     private String taskText;
     private boolean done;
     private Long userId;
@@ -16,7 +16,7 @@ public class TodoDTO {
 
     // Constructor
     public TodoDTO(Todo todo) {
-        this.todoId = todo.getId();
+        this.id = todo.getId();
         this.taskText = todo.getTaskText();
         this.done = todo.isDone();
 
@@ -30,7 +30,7 @@ public class TodoDTO {
     // DTO to entity conversion
     public Todo toEntity() {
         Todo todo = new Todo();
-        todo.setId(this.todoId);
+        todo.setId(this.id);
         todo.setTaskText(this.taskText);
         todo.setDone(this.done);
         return todo;

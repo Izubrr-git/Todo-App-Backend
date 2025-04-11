@@ -3,6 +3,7 @@ package com.example.todo_application.service;
 import com.example.todo_application.model.User;
 import com.example.todo_application.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +12,9 @@ import java.util.List;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public User getUserById(Long id) {
         return userRepository.findById(id)
@@ -33,16 +37,18 @@ public class UserService {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new RuntimeException("Username already exists");
         }
+
+        // Password encoding before saving
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
-
 
     public User updateUser(User user) {
         User existingUser = getUserById(user.getId());
         existingUser.setUsername(user.getUsername());
         existingUser.setEmail(user.getEmail());
         existingUser.setAvatarUrl(user.getAvatarUrl());
-        existingUser.setPassword(user.getPassword());
+
         return userRepository.save(existingUser);
     }
 
@@ -55,16 +61,19 @@ public class UserService {
 
     public void changePassword(Long userId, String oldPassword, String newPassword) {
         User user = getUserById(userId);
-        if (!oldPassword.equals(user.getPassword())) {
+
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new RuntimeException("Old password is incorrect");
         }
-        user.setPassword(newPassword);
+
+        user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
 
     public User loginUser(String email, String password) {
         User user = getUserByEmail(email);
-        if (!password.equals(user.getPassword())) {
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
         return user;
