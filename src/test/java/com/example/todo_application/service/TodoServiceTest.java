@@ -6,26 +6,23 @@ import com.example.todo_application.repository.TodoRepository;
 import com.example.todo_application.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@ActiveProfiles("test")
 public class TodoServiceTest {
 
     @Mock
@@ -41,18 +38,23 @@ public class TodoServiceTest {
     private Todo testTodo;
 
     @BeforeEach
-    void setUp() {
-        testUser = new User("testuser", "test@example.com", "password");
+    public void setup() {
+        // Создаем тестового пользователя
+        testUser = new User("todoUser", "todo@example.com", "password");
         testUser.setId(1L);
 
-        testTodo = new Todo("Test task", false);
+        // Создаем тестовую задачу
+        testTodo = new Todo("Test Task", false);
         testTodo.setId(1L);
         testTodo.setUser(testUser);
+
+        // Добавляем задачу в список задач пользователя
+        testUser.getTodos().add(testTodo);
     }
 
     @Test
-    void testGetAllTodosByUserId() {
-        Todo todo2 = new Todo("Second task", true);
+    public void testGetAllTodosByUserId() {
+        Todo todo2 = new Todo("Second Task", true);
         todo2.setId(2L);
         todo2.setUser(testUser);
 
@@ -60,93 +62,82 @@ public class TodoServiceTest {
 
         List<Todo> todos = todoService.getAllTodosByUserId(1L);
 
-        assertNotNull(todos);
-        assertEquals(2, todos.size());
-        verify(todoRepository).findByUserId(1L);
+        assertThat(todos).hasSize(2);
+        assertThat(todos).extracting(Todo::getTaskText)
+                .containsExactly("Test Task", "Second Task");
     }
 
     @Test
-    void testCreateTodo() {
-        Todo newTodo = new Todo("New task", false);
+    public void testCreateTodo() {
+        Todo newTodo = new Todo("New Task", false);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(todoRepository.save(any(Todo.class))).thenAnswer(invocation -> {
             Todo savedTodo = invocation.getArgument(0);
-            savedTodo.setId(3L);
+            savedTodo.setId(2L);
             return savedTodo;
         });
 
-        Todo created = todoService.createTodo(1L, newTodo);
+        Todo createdTodo = todoService.createTodo(1L, newTodo);
 
-        assertNotNull(created);
-        assertEquals(3L, created.getId());
-        assertEquals("New task", created.getTaskText());
-        assertEquals(testUser, created.getUser());
+        assertThat(createdTodo).isNotNull();
+        assertThat(createdTodo.getId()).isEqualTo(2L);
+        assertThat(createdTodo.getTaskText()).isEqualTo("New Task");
+        assertThat(createdTodo.getUser()).isEqualTo(testUser);
         verify(todoRepository).save(any(Todo.class));
     }
 
     @Test
-    void testCreateTodo_UserNotFound() {
-        Todo newTodo = new Todo("New task", false);
+    public void testCreateTodo_UserNotFound() {
+        Todo newTodo = new Todo("New Task", false);
 
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () ->
-                todoService.createTodo(999L, newTodo));
-
+        assertThrows(RuntimeException.class, () -> todoService.createTodo(999L, newTodo));
         verify(todoRepository, never()).save(any(Todo.class));
     }
 
     @Test
-    void testUpdateTodo() {
-        Todo todoUpdate = new Todo("Updated task", true);
+    public void testUpdateTodo() {
+        Todo todoDetails = new Todo("Updated Task", true);
 
         when(todoRepository.findById(1L)).thenReturn(Optional.of(testTodo));
         when(todoRepository.save(any(Todo.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Todo updated = todoService.updateTodo(1L, 1L, todoUpdate);
+        Todo updatedTodo = todoService.updateTodo(1L, 1L, todoDetails);
 
-        assertNotNull(updated);
-        assertEquals("Updated task", updated.getTaskText());
-        assertTrue(updated.isDone());
+        assertThat(updatedTodo).isNotNull();
+        assertThat(updatedTodo.getTaskText()).isEqualTo("Updated Task");
+        assertThat(updatedTodo.isDone()).isTrue();
         verify(todoRepository).save(any(Todo.class));
     }
 
     @Test
-    void testUpdateTodo_TodoNotFound() {
-        Todo todoUpdate = new Todo("Updated task", true);
+    public void testUpdateTodo_TodoNotFound() {
+        Todo todoDetails = new Todo("Updated Task", true);
 
         when(todoRepository.findById(999L)).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () ->
-                todoService.updateTodo(1L, 999L, todoUpdate));
-
+        assertThrows(RuntimeException.class, () -> todoService.updateTodo(1L, 999L, todoDetails));
         verify(todoRepository, never()).save(any(Todo.class));
     }
 
     @Test
-    void testUpdateTodo_TodoDoesNotBelongToUser() {
-        User anotherUser = new User("another", "another@example.com", "password");
+    public void testUpdateTodo_TodoNotBelongToUser() {
+        User anotherUser = new User("anotherUser", "another@example.com", "password");
         anotherUser.setId(2L);
 
-        Todo todoFromAnotherUser = new Todo("Another user's task", false);
-        todoFromAnotherUser.setId(2L);
-        todoFromAnotherUser.setUser(anotherUser);
+        Todo todoDetails = new Todo("Updated Task", true);
 
-        Todo todoUpdate = new Todo("Updated task", true);
+        when(todoRepository.findById(1L)).thenReturn(Optional.of(testTodo));
 
-        when(todoRepository.findById(2L)).thenReturn(Optional.of(todoFromAnotherUser));
-
-        assertThrows(RuntimeException.class, () ->
-                todoService.updateTodo(1L, 2L, todoUpdate));
-
+        assertThrows(RuntimeException.class, () -> todoService.updateTodo(2L, 1L, todoDetails));
         verify(todoRepository, never()).save(any(Todo.class));
     }
 
     @Test
-    void testDeleteTodo() {
+    public void testDeleteTodo() {
         when(todoRepository.findById(1L)).thenReturn(Optional.of(testTodo));
-        doNothing().when(todoRepository).delete(any(Todo.class));
 
         todoService.deleteTodo(1L, 1L);
 
@@ -154,29 +145,18 @@ public class TodoServiceTest {
     }
 
     @Test
-    void testDeleteTodo_TodoNotFound() {
+    public void testDeleteTodo_TodoNotFound() {
         when(todoRepository.findById(999L)).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () ->
-                todoService.deleteTodo(1L, 999L));
-
+        assertThrows(RuntimeException.class, () -> todoService.deleteTodo(1L, 999L));
         verify(todoRepository, never()).delete(any(Todo.class));
     }
 
     @Test
-    void testDeleteTodo_TodoDoesNotBelongToUser() {
-        User anotherUser = new User("another", "another@example.com", "password");
-        anotherUser.setId(2L);
+    public void testDeleteTodo_TodoNotBelongToUser() {
+        when(todoRepository.findById(1L)).thenReturn(Optional.of(testTodo));
 
-        Todo todoFromAnotherUser = new Todo("Another user's task", false);
-        todoFromAnotherUser.setId(2L);
-        todoFromAnotherUser.setUser(anotherUser);
-
-        when(todoRepository.findById(2L)).thenReturn(Optional.of(todoFromAnotherUser));
-
-        assertThrows(RuntimeException.class, () ->
-                todoService.deleteTodo(1L, 2L));
-
+        assertThrows(RuntimeException.class, () -> todoService.deleteTodo(2L, 1L));
         verify(todoRepository, never()).delete(any(Todo.class));
     }
 }
