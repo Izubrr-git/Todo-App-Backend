@@ -1,6 +1,6 @@
 package com.example.todo_application.controller;
 
-import com.example.todo_application.data_transfer_object.TodoDTO;
+import com.example.todo_application.dto.TodoDTO;
 import com.example.todo_application.model.Todo;
 import com.example.todo_application.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;

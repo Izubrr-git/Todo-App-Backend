@@ -1,8 +1,8 @@
 package com.example.todo_application.controller;
 
-import com.example.todo_application.data_transfer_object.LoginRequest;
-import com.example.todo_application.data_transfer_object.RegisterRequest;
-import com.example.todo_application.data_transfer_object.UserDTO;
+import com.example.todo_application.dto.LoginRequest;
+import com.example.todo_application.dto.RegisterRequest;
+import com.example.todo_application.dto.UserDTO;
 import com.example.todo_application.model.User;
 import com.example.todo_application.service.UserService;
 import jakarta.validation.Valid;

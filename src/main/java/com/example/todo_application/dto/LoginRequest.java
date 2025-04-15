@@ -1,4 +1,4 @@
-package com.example.todo_application.data_transfer_object;
+package com.example.todo_application.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

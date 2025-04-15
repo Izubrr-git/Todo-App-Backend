@@ -1,4 +1,4 @@
-package com.example.todo_application.data_transfer_object;
+package com.example.todo_application.dto;
 
 import com.example.todo_application.model.User;
 import lombok.Data;
