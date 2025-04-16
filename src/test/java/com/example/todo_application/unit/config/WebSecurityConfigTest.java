@@ -1,5 +1,6 @@
-package com.example.todo_application.config;
+package com.example.todo_application.unit.config;
 
+import com.example.todo_application.config.WebSecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

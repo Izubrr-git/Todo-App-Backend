@@ -1,4 +1,4 @@
-package com.example.todo_application.controller;
+package com.example.todo_application.integration.controller;
 
 import com.example.todo_application.dto.TodoDTO;
 import com.example.todo_application.model.Todo;

@@ -1,10 +1,11 @@
-package com.example.todo_application.service;
+package com.example.todo_application.integration.service;
 
 import com.example.todo_application.model.Todo;
 import com.example.todo_application.model.User;
 import com.example.todo_application.repository.TodoRepository;
 import com.example.todo_application.repository.UserRepository;
-import com.example.todo_application.BaseIntegrationTest;
+import com.example.todo_application.integration.BaseIntegrationTest;
+import com.example.todo_application.service.TodoService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

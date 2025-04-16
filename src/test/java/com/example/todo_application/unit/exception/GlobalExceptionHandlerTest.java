@@ -1,5 +1,6 @@
-package com.example.todo_application.exception;
+package com.example.todo_application.unit.exception;
 
+import com.example.todo_application.exception.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -12,7 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.example.todo_application.service.UserService;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 

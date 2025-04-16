@@ -1,4 +1,4 @@
-package com.example.todo_application.controller;
+package com.example.todo_application.integration.controller;
 
 import com.example.todo_application.dto.LoginRequest;
 import com.example.todo_application.dto.RegisterRequest;

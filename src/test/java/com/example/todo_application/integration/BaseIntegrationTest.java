@@ -1,4 +1,4 @@
-package com.example.todo_application;
+package com.example.todo_application.integration;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;

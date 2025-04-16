@@ -1,4 +1,4 @@
-package com.example.todo_application.validation;
+package com.example.todo_application.unit.validation;
 
 import com.example.todo_application.dto.LoginRequest;
 import com.example.todo_application.dto.RegisterRequest;

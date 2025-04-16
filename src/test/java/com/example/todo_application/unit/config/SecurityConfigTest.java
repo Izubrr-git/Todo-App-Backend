@@ -1,5 +1,6 @@
-package com.example.todo_application.config;
+package com.example.todo_application.unit.config;
 
+import com.example.todo_application.config.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;

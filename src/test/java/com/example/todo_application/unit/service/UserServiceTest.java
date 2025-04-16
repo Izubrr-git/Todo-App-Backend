@@ -1,7 +1,8 @@
-package com.example.todo_application.service;
+package com.example.todo_application.unit.service;
 
 import com.example.todo_application.model.User;
 import com.example.todo_application.repository.UserRepository;
+import com.example.todo_application.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

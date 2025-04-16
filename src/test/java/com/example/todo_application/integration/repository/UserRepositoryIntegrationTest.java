@@ -1,6 +1,7 @@
-package com.example.todo_application.repository;
+package com.example.todo_application.integration.repository;
 
 import com.example.todo_application.model.User;
+import com.example.todo_application.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -15,7 +16,7 @@ import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTest
 @DataJpaTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = Replace.NONE) // Используем реальную базу данных вместо встроенной
-public class UserRepositoryTest {
+public class UserRepositoryIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;

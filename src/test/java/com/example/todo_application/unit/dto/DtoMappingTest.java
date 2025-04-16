@@ -1,18 +1,15 @@
-package com.example.todo_application.dto;
+package com.example.todo_application.unit.dto;
 
+import com.example.todo_application.dto.TodoDTO;
+import com.example.todo_application.dto.UserDTO;
 import com.example.todo_application.model.Todo;
 import com.example.todo_application.model.User;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Тесты для проверки маппинга между DTO и сущностями.
- */
-@ActiveProfiles("test")
 public class DtoMappingTest {
 
     @Test
